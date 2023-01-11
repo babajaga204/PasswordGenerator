@@ -1,9 +1,12 @@
-﻿using System.Diagnostics.SymbolStore;
+﻿using System.ComponentModel;
+using System.Diagnostics.SymbolStore;
 
 namespace PasswordGenerator
 {
     internal class Program
     {
+        static readonly Random Random = new Random();
+
         static void Main(string[] args)
         {
             if (!IsValid(args))
@@ -12,29 +15,64 @@ namespace PasswordGenerator
                 return;
             }
 
+            var length = Convert.ToInt32(args[0]);
+            var options = args[1];
 
-            string pattern = args[1].PadRight(Convert.ToInt32(args[0]), 'l');
-            Console.WriteLine(pattern);
+            var pattern = options.PadRight(length, 'l');
+            // StringBuffer
+            var password = string.Empty;
 
+            foreach (var category in pattern)
+            {
+                if (category == 'l') password += WriteRandomLowerCaseLetter();
+                else if (category == 'L') password += WriteRandomUpperCaseLetter();
+                else if (category == 'd') password += WriteRandomInt();
+                else password += WriteRandomSpecialChar();
+            }
+
+            Console.WriteLine(password);
         }
 
-        static bool IsValid(string[] args)
+        private static char WriteRandomLowerCaseLetter()
         {
-            if (args.Length == 0)
+            return GetRandomLetter('a', 'z');
+        }
+        private static char WriteRandomUpperCaseLetter()
+        {
+            return GetRandomLetter('A', 'Z');
+        }
+
+        private static char GetRandomLetter(char min, char max)
+        {
+            return (char)Random.Next(min, max);
+        }
+
+        private static char WriteRandomInt()
+        {
+            return Random.Next(0, 9).ToString()[0];
+        }
+
+        private static char WriteRandomSpecialChar()
+        {
+            var allChars = "!\"?#¤%&/(){}[]"; 
+            var index = Random.Next(0, allChars.Length - 1);
+            return allChars[index];
+        }
+
+        private static bool IsValid(string[] args)
+        {
+            switch (args.Length)
             {
-                return false;
-            }
-            else if (args.Length == 2)
-            {
-                CheckArgs(args);
-                return true;
-            }
-            else
-            {
-                return false;
+                case 0:
+                    return false;
+                case 2:
+                    CheckArgs(args);
+                    return true;
+                default:
+                    return false;
             }
         }
-        static void CheckArgs(string[] args)
+        private static void CheckArgs(string[] args)
         {
             if (!CheckFirstArg(args[0])) { Console.WriteLine("Please enter a valid number"); ShowOptions(); }
             else if (!CheckSecondArg(args[1])) { Console.WriteLine("Please insert valid options"); ShowOptions(); }
@@ -44,14 +82,7 @@ namespace PasswordGenerator
         {
             foreach (var c in firstArg)
             {
-                if (!char.IsDigit(c))
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
+                return char.IsDigit(c);
             }
             return true;
         }
@@ -87,7 +118,7 @@ namespace PasswordGenerator
             Console.WriteLine("     - l = lower case letter");
             Console.WriteLine("     - L = upper case letter");
             Console.WriteLine("     - d = digit");
-            Console.WriteLine("     - s = special characters !\"#¤%&/(){}[]");
+            Console.WriteLine("     - s = special characters !\"?#¤%&/(){}[]");
             Console.WriteLine("");
             Console.WriteLine("Example: PasswordGenerator 14 lLssdd");
             Console.WriteLine("     Min. 1 lower case");
