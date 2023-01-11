@@ -2,7 +2,7 @@
   "profiles": {
     "PasswordGenerator": {
       "commandName": "Project",
-      "commandLineArgs": "14 llLdsst"
+      "commandLineArgs": "14 llLdss"
     }
   }
 }
