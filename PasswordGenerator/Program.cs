@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Diagnostics.SymbolStore;
 
 namespace PasswordGenerator
@@ -22,8 +23,17 @@ namespace PasswordGenerator
             // StringBuffer
             var password = string.Empty;
 
-            foreach (var category in pattern)
+            while (pattern.Length > 0)
             {
+
+                var randomIndex = Random.Next(0, pattern.Length - 1);
+                var category = pattern[randomIndex];
+
+
+                // extract char at rand index and add remaining substrings together
+                pattern = pattern.Substring(0, randomIndex) +
+                          pattern.Substring(randomIndex + 1, pattern.Length - randomIndex - 1);
+
                 if (category == 'l') password += WriteRandomLowerCaseLetter();
                 else if (category == 'L') password += WriteRandomUpperCaseLetter();
                 else if (category == 'd') password += WriteRandomInt();
@@ -31,6 +41,7 @@ namespace PasswordGenerator
             }
 
             Console.WriteLine(password);
+
         }
 
         private static char WriteRandomLowerCaseLetter()
