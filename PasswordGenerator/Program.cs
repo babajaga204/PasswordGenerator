@@ -41,30 +41,65 @@ namespace PasswordGenerator
             }
             else
             {
-                CheckFirstArg(args);
+                CheckArgs(args);
                 return true;
             }
         }
-        static void CheckFirstArg(string[] args)
+        static void CheckArgs(string[] args)
         {
-            foreach (var c in args[0])
+            CheckFirstArg(args[0]);
+            CheckSecondArg(args[1]);
+        }
+
+        private static void CheckFirstArg(string firstArg)
+        {
+            foreach (var c in firstArg)
             {
                 if (!char.IsDigit(c))
                 {
-                    Console.WriteLine("Please enter a number.");
+                    Console.WriteLine("Please enter a number");
                     ShowOptions();
+                    return;
                 }
                 else
                 {
                     Console.WriteLine("We did it! test");
-                    //TODO: Convert string digits to ints and use for Password Length
+                    //TODO: Convert string digits to int and use for Password Length Argument
                 }
-                
             }
         }
-        static bool IsNumber(string[] args)
+        private static void CheckSecondArg(string secondArg)
         {
-            string firstArg = args[0];
+            foreach (var c in secondArg)
+            {
+                CheckChar(c);
+            }
+        }
+        private static bool CheckChar(char c)
+        {
+            if (c == 'l')
+            {
+                Console.WriteLine(c);
+                return true;
+            }
+            else if (c == 'L')
+            {
+                Console.WriteLine(c);
+                return true;
+            }
+            else if (c == 'd')
+            {
+                Console.WriteLine(c);
+                return true;
+            }
+            else if (c == 's')
+            {
+                Console.WriteLine(c);
+                return true;
+            }
+            Console.WriteLine("Please insert valid options");
+            ShowOptions();
+            return false;
         }
     }
 }
